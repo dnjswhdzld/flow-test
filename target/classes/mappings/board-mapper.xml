@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BoardDAO">
+	
+	<resultMap type="flowboard" id="flowboard">
+		<id property="flowboard_seq" column="FLOWBOARD_SEQ"></id>
+		<result property="flowboard_title" column="FLOWBOARD_TITLE"/>
+		<result property="flowboard_content" column="FLOWBOARD_CONTENT"/>
+		<result property="flowboard_filename" column="FLOWBOARD_FILENAME"/>
+		<result property="flowboard_filepath" column="FLOWBOARD_FILEPATH"/>
+		<result property="flowboard_size" column="FLOWBOARD_SIZE"/>
+	</resultMap>
+	
+	<insert id="boardInsert">
+		INSERT INTO flowboard(flowboard_seq, flowboard_title, flowboard_content, flowboard_filename, flowboard_filepath, flowboard_size)
+		VALUES((select nvl(max(flowboard_seq), 0) +1 from flowboard),#{flowboard_title},#{flowboard_content},#{flowboard_filename,jdbcType=VARCHAR},#{flowboard_filepath,jdbcType=VARCHAR},#{flowboard_size,jdbcType=VARCHAR})
+	</insert>
+
+
+	<select id="boardSelect" resultMap="flowboard">
+		SELECT * FROM flowboard
+	</select>
+</mapper>

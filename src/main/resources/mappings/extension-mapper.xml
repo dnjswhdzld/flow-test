@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ExtensionDAO">
+	<resultMap type="extension" id="extension">
+		<id property="extension_seq" column="EXTENSION_ID"/>
+		<result property="extension_name" column="EXTENSION_NAME"/>
+		<result property="extension_type" column="EXTENSION_TYPE"/>
+		<result property="use_yn" column="USE_YN"/>
+		
+	</resultMap>
+
+	<insert id="extensionInsert" parameterType="extension">
+		INSERT INTO extension (extension_seq, extension_name,extension_type)
+		VALUES ((select nvl(max(extension_seq), 0) +1 from extension), #{extension_name}, #{extension_type})
+	</insert>
+	
+	
+	<select id="extensionSelect" resultType="extension">
+		SELECT * FROM extension ORDER BY extension_seq ASC
+	</select>
+	
+	<update id="extensionDefaultUpdate" parameterType="extension">
+		UPDATE extension SET use_yn = #{use_yn} WHERE extension_name = #{extension_name}
+	</update>
+	
+	<update id="extensionSetting" parameterType="extension">
+		MERGE INTO
+			extension
+		USING DUAL
+			ON (extension_seq = #{extension_seq})
+			WHEN MATCHED THEN
+				UPDATE SET extension_name = #{extension_name}
+			WHEN NOT MATCHED THEN
+				INSERT (extension_seq, extension_name)
+				VALUES ((SELECT NVL(MAX(extension_seq),0)+1 FROM extension), #{extension_name})
+	</update>
+	
+	<delete id="extensionDelete" parameterType="extension">
+		DELETE extension WHERE extension_name = #{extension_name}
+	</delete>
+	
+</mapper>
